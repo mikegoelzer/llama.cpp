@@ -1247,8 +1247,17 @@ def pick_output_type(model: LazyModel, output_type_str: str | None) -> GGMLFileT
 
 
 def convert_to_output_type(model: LazyModel, output_type: GGMLFileType) -> LazyModel:
-    return {name: tensor.astype(output_type.type_for_tensor(name, tensor))
-            for (name, tensor) in model.items()}
+    #return {name: tensor.astype(output_type.type_for_tensor(name, tensor))
+    #        for (name, tensor) in model.items()}
+
+    f16_type = GGMLFileType.MostlyF16
+    ret = {}
+    for (name, tensor) in model.items():
+        if 'token_embd.weight' in name:
+            ret[name] = tensor.astype(f16_type.type_for_tensor(name, tensor)) 
+        else:
+            ret[name] = tensor.astype(output_type.type_for_tensor(name, tensor))
+    return ret
 
 
 def convert_model_names(model: LazyModel, params: Params) -> LazyModel:

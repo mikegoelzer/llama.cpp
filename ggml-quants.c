@@ -500,19 +500,20 @@ void quantize_row_q4_1_reference(const float * restrict x, block_q4_1 * restrict
             if (v > max) max = v;
         }
 
-        const float d  = (max - min) / ((1 << 4) - 1);
+        const float d  = (max - min) / ((1 << 4) - 2);
         const float id = d ? 1.0f/d : 0.0f;
 
         y[i].d = GGML_FP32_TO_FP16(d);
         y[i].m = GGML_FP32_TO_FP16(min);
 
         for (int j = 0; j < qk/2; ++j) {
-            const float x0 = (x[i*qk + 0    + j] - min)*id;
-            const float x1 = (x[i*qk + qk/2 + j] - min)*id;
+            const float x0 = round((x[i*qk + 0    + j] - min)*id);
+            const float x1 = round((x[i*qk + qk/2 + j] - min)*id);
 
-            const uint8_t xi0 = MIN(15, (int8_t)(x0 + 0.5f));
-            const uint8_t xi1 = MIN(15, (int8_t)(x1 + 0.5f));
-
+            //const uint8_t xi0 = MIN(15, (int8_t)(x0 + 0.5f));
+            //const uint8_t xi1 = MIN(15, (int8_t)(x1 + 0.5f));
+            uint8_t xi0 = x0;
+            uint8_t xi1 = x1;
             y[i].qs[j]  = xi0;
             y[i].qs[j] |= xi1 << 4;
         }

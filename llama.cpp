@@ -9176,6 +9176,8 @@ static void llama_model_quantize_internal(const std::string & fname_inp, const s
 
         // do not quantize expert gating tensors
         quantize &= name.find("ffn_gate_inp.weight") == std::string::npos;
+        quantize &= name.find("token_embd.weight") == std::string::npos;
+        //quantize &= name.find("output.weight") == std::string::npos;
 
         enum ggml_type new_type;
         void * new_data;
