@@ -534,7 +534,7 @@ void quantize_row_q4_1_reference(const float * restrict x, block_q4_1 * restrict
             if (v > max) max = v;
         }
 
-        const float d  = (max - min) / ((1 << 4) - 2);
+        const float d  = (max - min) / ((1 << 4) - 1);
         const float id = d ? 1.0f/d : 0.0f;
 
         y[i].d = GGML_FP32_TO_FP16(d);
