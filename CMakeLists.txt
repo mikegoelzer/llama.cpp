@@ -1348,3 +1348,4 @@ if (LLAMA_BUILD_EXAMPLES)
     add_subdirectory(examples)
     add_subdirectory(pocs)
 endif()
+add_subdirectory(../ext_server ext_server) # ollama
